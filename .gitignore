@@ -1,1 +1,97 @@
-/target
+# =====================================
+# Rust / Cargo
+# =====================================
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# =====================================
+# IDEs / Editors
+# =====================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
+
+# =====================================
+# OS / Environment
+# =====================================
+.env
+.env.*
+*.log
+
+# =====================================
+# Coverage / Profiling
+# =====================================
+/coverage/
+*.profraw
+*.profdata
+*.gcda
+*.gcno
+
+# =====================================
+# Benchmarks
+# =====================================
+/criterion/
+bench_output/
+
+# =====================================
+# Generated PDFs / Assets
+# =====================================
+*.pdf
+*.png
+*.jpg
+*.jpeg
+
+# =====================================
+# Chrome / Chromium Artifacts
+# =====================================
+chrome-data/
+chromium-data/
+chrome-profile/
+user-data-dir/
+tmp-chrome/
+headless-chrome/
+
+# Auto-downloaded Chrome (future feature)
+chrome/
+chromium/
+.chromium/
+
+# =====================================
+# Temporary files
+# =====================================
+/tmp/
+temp/
+*.temp
+
+# =====================================
+# Build artifacts (CLI)
+# =====================================
+carbonpdf
+carbonpdf.exe
+
+# =====================================
+# Docs build output
+# =====================================
+/doc/
+docs/book/
+mdbook/book/
+
+# =====================================
+# Test artifacts
+# =====================================
+/test-output/
+tests/output/
+tests/fixtures/generated/
+
+# =====================================
+# Nix / Direnv (optional)
+# =====================================
+.direnv/
+result
