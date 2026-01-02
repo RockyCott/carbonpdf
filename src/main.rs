@@ -1,3 +1,9 @@
+#[cfg(feature = "cli")]
+fn main() -> carbonpdf::Result<()> {
+    carbonpdf::cli::run()
+}
+
+#[cfg(not(feature = "cli"))]
 fn main() {
-    println!("Hello, world!");
+    eprintln!("The carbonpdf CLI is disabled. Rebuild with --features cli.");
 }

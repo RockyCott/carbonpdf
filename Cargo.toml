@@ -2,5 +2,66 @@
 name = "carbonpdf"
 version = "0.1.0"
 edition = "2024"
+authors = ["JB Sevani <danielvege6@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Production-ready HTML to PDF conversion using Headless Chrome"
+readme = "README.md"
+keywords = ["pdf", "html", "chrome", "headless", "conversion"]
+categories = ["web-programming", "rendering"]
 
 [dependencies]
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Async runtime
+tokio = { version = "1.48", features = ["full"] }
+tokio-tungstenite = "0.28"
+futures = "0.3"
+
+# HTTP client (for URL fetching)
+reqwest = { version = "0.12", features = ["rustls-tls"] }
+
+# Chrome DevTools Protocol
+chromiumoxide = { version = "0.8", optional = true }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", optional = true }
+
+# CLI (optional)
+clap = { version = "4.4", features = ["derive"], optional = true }
+
+# Utils
+tempfile = "3.8"
+base64 = "0.22"
+uuid = { version = "1.6", features = ["v4"] }
+async-trait = "0.1.89"
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = "0.8"
+pretty_assertions = "1.4"
+
+[features]
+default = ["chrome"]
+chrome = ["chromiumoxide"]
+cli = ["clap", "tracing-subscriber"]
+
+[[bin]]
+name = "carbonpdf"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[[bench]]
+name = "rendering"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
