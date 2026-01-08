@@ -4,7 +4,7 @@ use crate::{
     config::{ChromeConfig, Margins, Orientation, PageSize, PdfConfig},
     error::Result,
     input::InputSource,
-    renderer::PdfRenderer,
+    renderer::{PdfRenderer, ResolvedInput},
 };
 
 #[cfg(feature = "chrome")]
@@ -29,7 +29,6 @@ use crate::renderer::chrome::ChromeRenderer;
 /// # Ok(())
 /// # }
 /// ```
-
 pub struct PdfBuilder {
     input: Option<InputSource>,
     config: PdfConfig,
@@ -68,6 +67,77 @@ impl PdfBuilder {
     pub fn url<S: Into<String>>(mut self, url: S) -> Self {
         self.input = Some(InputSource::url(url));
         self
+    }
+
+    /// Build PDF from a custom template with data.
+    ///
+    /// This allows you to use your own Handlebars templates.
+    ///
+    /// # Example
+    ///
+    /// ```rust,no_run
+    /// use carbonpdf::PdfBuilder;
+    /// use serde_json::json;
+    ///
+    /// # #[tokio::main]
+    /// # async fn main() -> carbonpdf::Result<()> {
+    /// let template = r#"
+    ///     <h1>Hello {{name}}!</h1>
+    ///     <p>Welcome to {{company}}.</p>
+    /// "#;
+    ///
+    /// let data = json!({
+    ///     "name": "Alice",
+    ///     "company": "Tech Corp"
+    /// });
+    ///
+    /// let pdf = PdfBuilder::new()
+    ///     .template(template, data)?
+    ///     .build()
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[cfg(feature = "templates")]
+    pub fn template<S, D>(mut self, template: S, data: D) -> Result<Self>
+    where
+        S: Into<String>,
+        D: serde::Serialize,
+    {
+        self.input = Some(InputSource::template(template, data)?);
+        Ok(self)
+    }
+
+    /// Build PDF from a template file with data.
+    ///
+    /// # Example
+    ///
+    /// ```rust,no_run
+    /// use carbonpdf::PdfBuilder;
+    /// use serde_json::json;
+    ///
+    /// # #[tokio::main]
+    /// # async fn main() -> carbonpdf::Result<()> {
+    /// let data = json!({
+    ///     "title": "My Document",
+    ///     "content": "Document content here"
+    /// });
+    ///
+    /// let pdf = PdfBuilder::new()
+    ///     .template_file("templates/custom.hbs", data)?
+    ///     .build()
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[cfg(feature = "templates")]
+    pub fn template_file<P, D>(mut self, path: P, data: D) -> Result<Self>
+    where
+        P: Into<std::path::PathBuf>,
+        D: serde::Serialize,
+    {
+        self.input = Some(InputSource::template_file(path, data)?);
+        Ok(self)
     }
 
     /// Set page size.
@@ -170,8 +240,13 @@ impl PdfBuilder {
 
         self.config.validate()?;
 
+        let resolved = match input {
+        InputSource::Url(url) => ResolvedInput::Url(url),
+        other => ResolvedInput::Html(other.resolve().await?),
+    };
+
         let renderer = ChromeRenderer::new(self.chrome_config).await?;
-        renderer.render(input, self.config).await
+        renderer.render(resolved, self.config).await
     }
 
     /// Build and generate the PDF using a custom renderer.
@@ -185,6 +260,11 @@ impl PdfBuilder {
         
         self.config.validate()?;
         
-        renderer.render(input, self.config).await
+        let resolved = match input {
+            InputSource::Url(url) => ResolvedInput::Url(url),
+            other => ResolvedInput::Html(other.resolve().await?),
+        };
+
+        renderer.render(resolved, self.config).await
     }
 }

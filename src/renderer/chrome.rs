@@ -13,8 +13,7 @@ use tempfile::TempDir;
 use crate::{
     config::{ChromeConfig, Orientation, PdfConfig},
     error::{Error, Result},
-    input::InputSource,
-    renderer::PdfRenderer,
+    renderer::{PdfRenderer, ResolvedInput},
 };
 
 /// Chrome-based PDF renderer.
@@ -136,7 +135,7 @@ impl ChromeRenderer {
 
 #[async_trait]
 impl PdfRenderer for ChromeRenderer {
-    async fn render(&self, input: InputSource, config: PdfConfig) -> Result<Vec<u8>> {
+    async fn render(&self, input: ResolvedInput, config: PdfConfig) -> Result<Vec<u8>> {
         // Create a new page
         let page = self.browser.new_page("about:blank")
             .await
@@ -144,23 +143,13 @@ impl PdfRenderer for ChromeRenderer {
         
         // Load content based on input type
         match input {
-            InputSource::Html(html) => {
+            ResolvedInput::Html(html) => {
                 page.set_content(&html)
                     .await
                     .map_err(|e| Error::Protocol(format!("Failed to set content: {}", e)))?;
             }
             
-            InputSource::File(path) => {
-                let html = tokio::fs::read_to_string(&path)
-                    .await
-                    .map_err(|e| Error::InputSource(format!("Failed to read file: {}", e)))?;
-                
-                page.set_content(&html)
-                    .await
-                    .map_err(|e| Error::Protocol(format!("Failed to set content: {}", e)))?;
-            }
-            
-            InputSource::Url(url) => {
+            ResolvedInput::Url(url) => {
                 page.goto(&url)
                     .await
                     .map_err(|e| Error::Protocol(format!(
@@ -175,7 +164,6 @@ impl PdfRenderer for ChromeRenderer {
                         url, e
                     )))?;
             }
-
         }
         
         // Generate PDF with timeout

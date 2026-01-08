@@ -60,6 +60,11 @@ pub use config::{PdfConfig, PageSize, Orientation, Margins};
 pub use error::{Error, Result};
 pub use input::InputSource;
 pub use renderer::PdfRenderer;
+#[cfg(feature = "templates")]
+pub mod template;
+
+#[cfg(feature = "templates")]
+pub use template::render_template;
 
 #[cfg(feature = "cli")]
 pub mod cli;
