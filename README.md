@@ -107,10 +107,12 @@ carbonpdf = { version = "0.2", features = ["templates"] }
 Use your own Handlebars templates:
 
 ```rust
-use carbonpdf::PdfBuilder;
+use carbonpdf::{PdfBuilder, Result};
 use serde_json::json;
 
-let template = r#"
+#[tokio::main]
+async fn main() -> Result<()> {
+    let template = r#"
     <h1>{{title}}</h1>
     <p>Hello {{name}}, your order #{{order_id}} is confirmed!</p>
     <ul>
@@ -120,17 +122,21 @@ let template = r#"
     </ul>
 "#;
 
-let data = json!({
-    "title": "Order Confirmation",
-    "name": "Alice",
-    "order_id": "12345",
-    "items": ["Product A", "Product B", "Product C"]
-});
+    let data = json!({
+        "title": "Order Confirmation",
+        "name": "Sevani",
+        "order_id": "12345",
+        "items": ["Product A", "Product B", "Product C"]
+    });
 
-let pdf = PdfBuilder::new()
-    .template(template, data)?
-    .build()
-    .await?;
+    let pdf = PdfBuilder::new()
+        .template(template, data)?
+        .build()
+        .await?;
+
+    std::fs::write("output.pdf", pdf)?;
+    Ok(())
+}
 ```
 
 ### Template Helpers
