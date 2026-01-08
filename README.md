@@ -89,6 +89,64 @@ let pdf = PdfBuilder::new()
     .await?;
 ```
 
+## Template Features (Optional)
+
+CarbonPDF includes optional Handlebars templating support for custom templates with variables.
+
+### Enable Templates
+
+Add the `templates` feature to your `Cargo.toml`:
+
+```toml
+[dependencies]
+carbonpdf = { version = "0.2", features = ["templates"] }
+```
+
+### Custom Templates
+
+Use your own Handlebars templates:
+
+```rust
+use carbonpdf::PdfBuilder;
+use serde_json::json;
+
+let template = r#"
+    <h1>{{title}}</h1>
+    <p>Hello {{name}}, your order #{{order_id}} is confirmed!</p>
+    <ul>
+    {{#each items}}
+        <li>{{this}}</li>
+    {{/each}}
+    </ul>
+"#;
+
+let data = json!({
+    "title": "Order Confirmation",
+    "name": "Alice",
+    "order_id": "12345",
+    "items": ["Product A", "Product B", "Product C"]
+});
+
+let pdf = PdfBuilder::new()
+    .template(template, data)?
+    .build()
+    .await?;
+```
+
+### Template Helpers
+
+CarbonPDF includes custom Handlebars helpers:
+
+- `{{format_currency value symbol}}` - Format currency values
+- `{{format_date date_string}}` - Format dates
+
+Example:
+
+```handlebars
+<p>Total: {{format_currency 1234.56 "$"}}</p>
+<!-- Outputs: Total: $1234.56 -->
+```
+
 ### Advanced Configuration
 
 ```rust

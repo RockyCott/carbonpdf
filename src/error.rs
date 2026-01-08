@@ -24,6 +24,16 @@ pub enum Error {
     #[error("Input source error: {0}")]
     InputSource(String),
 
+    /// Template rendering error
+    #[cfg(feature = "templates")]
+    #[error("Template error: {0}")]
+    Template(String),
+
+    /// Template not found
+    #[cfg(feature = "templates")]
+    #[error("Template not found: {0}")]
+    TemplateNotFound(String),
+
     /// Navigation error when loading pages
     #[error("Navigation error: {0}")]
     Navigation(String),

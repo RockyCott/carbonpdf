@@ -1,6 +1,6 @@
 [package]
 name = "carbonpdf"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 authors = ["JB Sevani <danielvege6@gmail.com>"]
 license = "MIT OR Apache-2.0"
@@ -31,6 +31,9 @@ reqwest = { version = "0.12", features = ["rustls-tls"] }
 # Chrome DevTools Protocol
 chromiumoxide = { version = "0.8", optional = true }
 
+# Optional: Handlebars templating support
+handlebars = { version = "6.4", optional = true }
+
 # Logging
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", optional = true }
@@ -53,6 +56,10 @@ pretty_assertions = "1.4"
 default = ["chrome"]
 chrome = ["chromiumoxide"]
 cli = ["clap", "tracing-subscriber"]
+templates = ["handlebars"]
+
+# Convenience features
+full = ["chrome", "templates", "cli"]
 
 [[bin]]
 name = "carbonpdf"
