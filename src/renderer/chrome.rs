@@ -24,7 +24,8 @@ use crate::{
 /// # Examples
 ///
 /// ```rust,no_run
-/// use carbonpdf::{ChromeRenderer, InputSource, PdfConfig};
+/// use carbonpdf::{ChromeRenderer, PdfConfig};
+/// use carbonpdf::renderer::ResolvedInput;
 /// use carbonpdf::config::ChromeConfig;
 /// use crate::carbonpdf::PdfRenderer;
 ///
@@ -33,7 +34,7 @@ use crate::{
 /// let config = ChromeConfig::default();
 /// let renderer = ChromeRenderer::new(config).await?;
 ///
-/// let input = InputSource::html("<h1>Test</h1>");
+/// let input = ResolvedInput::Html("<h1>Test</h1>".to_string());
 /// let pdf_config = PdfConfig::default();
 /// let pdf = renderer.render(input, pdf_config).await?;
 /// # Ok(())
