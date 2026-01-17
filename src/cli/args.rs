@@ -51,6 +51,10 @@ pub struct Cli {
     #[arg(long)]
     pub no_background: bool,
 
+    /// Disable waiting for fonts to load before rendering
+    #[arg(long)]
+    pub no_wait_fonts: bool,
+
     /// Path to Chrome/Chromium binary
     #[arg(long)]
     pub chrome_path: Option<String>,

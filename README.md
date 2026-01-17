@@ -168,6 +168,7 @@ let pdf = PdfBuilder::new()
     .header("<div style='font-size: 10px;'>Page <span class='pageNumber'></span></div>")
     .footer("<div style='text-align: center;'>© 2024 Your Company</div>")
     .timeout(60)  // seconds
+    .wait_for_fonts(true)  // wait for web fonts to load
     .build()
     .await?;
 ```

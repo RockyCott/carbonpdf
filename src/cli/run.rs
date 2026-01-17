@@ -100,6 +100,7 @@ fn apply_render_options(builder: PdfBuilder, cli: &Cli) -> PdfBuilder {
     builder
         .scale(cli.scale)
         .print_background(!cli.no_background)
+        .wait_for_fonts(!cli.no_wait_fonts)
         .timeout(cli.timeout)
 }
 

@@ -207,6 +207,12 @@ impl PdfBuilder {
         self
     }
 
+    /// Whether to wait for all fonts to load before rendering.
+    pub fn wait_for_fonts(mut self, wait: bool) -> Self {
+        self.config.wait_for_fonts = wait;
+        self
+    }
+
     /// Set Chrome binary path.
     pub fn chrome_path<S: Into<String>>(mut self, path: S) -> Self {
         self.chrome_config.binary_path = Some(path.into());
