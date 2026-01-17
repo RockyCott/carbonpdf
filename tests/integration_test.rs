@@ -67,6 +67,33 @@ async fn test_scale_factor() -> Result<()> {
 }
 
 #[tokio::test]
+async fn test_wait_for_fonts() -> Result<()> {
+    let html = r#"
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+            <style>body { font-family: 'Roboto', sans-serif; }</style>
+        </head>
+        <body>
+            <h1>Font Test</h1>
+        </body>
+        </html>
+    "#;
+
+    let pdf = PdfBuilder::new()
+        .html(html)
+        .wait_for_fonts(true)
+        .build()
+        .await?;
+
+    assert!(!pdf.is_empty());
+    assert!(pdf.starts_with(b"%PDF"));
+
+    Ok(())
+}
+
+#[tokio::test]
 #[should_panic(expected = "No input source specified")]
 async fn test_missing_input() {
     let _ = PdfBuilder::new()

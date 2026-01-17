@@ -32,6 +32,9 @@ pub struct PdfConfig {
     /// Prefer CSS page size
     pub prefer_css_page_size: bool,
     
+    /// Whether to wait for all fonts to load before rendering
+    pub wait_for_fonts: bool,
+    
     /// Generation timeout in seconds
     pub timeout_seconds: u64,
 }
@@ -48,6 +51,7 @@ impl Default for PdfConfig {
             header_template: None,
             footer_template: None,
             prefer_css_page_size: false,
+            wait_for_fonts: true,
             timeout_seconds: 30,
         }
     }

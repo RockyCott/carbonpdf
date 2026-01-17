@@ -167,6 +167,13 @@ impl PdfRenderer for ChromeRenderer {
             }
         }
         
+        // Wait for fonts to load if requested
+        if config.wait_for_fonts {
+            page.evaluate("document.fonts.ready")
+                .await
+                .map_err(|e| Error::Protocol(format!("Failed to wait for fonts: {}", e)))?;
+        }
+
         // Generate PDF with timeout
         let print_params = Self::build_print_params(&config);
         
